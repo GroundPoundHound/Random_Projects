@@ -1,0 +1,121 @@
+// with help from http://stackoverflow.com/questions/16001803/pointer-to-pointer-dynamic-two-dimensional-array
+
+#include <iostream>
+
+using namespace std;
+
+bool set_ships(int **& matrix, int size, int num1)	//randomly assigns ones (ships) to the matrix of zeroes.
+{
+ 	int random1, random2; 	//used for random assignment of ships
+ 	int a = 0;	//used to monitor while-loop
+ 
+
+ 	while(a < num1){
+			random1 = rand() % size;
+			random2 = rand() % size;
+
+			while(matrix[random1][random2] == 0)
+			{
+				matrix[random1][random2] = 1;
+			}
+
+			a += 1;
+	}
+
+//Uncomment the below section in order to reveal ship locations when running the program.
+ for(int j = 0; j <= size-1; j++)
+	{
+		for(int k = 0; k <= size-1; k++)
+		{
+			 cout << matrix[j][k] << " ";
+		}
+
+		cout << endl;
+	}
+
+
+	return true;
+}
+
+int main()
+{
+	int size, num_ships, row, col;
+	int num_hits=0;
+
+	cout << "***** Battleship *****" << endl;
+	cout << "\nHow many rows/columns is the board? ";
+	cin >> size;
+	cout << endl;
+
+	int array_size = size -1;
+	int **B;	//2D array that acts as the board for the Battleship game
+
+	B = new int* [size];
+	for (int q = 0; q <= array_size; q++)
+	{
+		B[q] = new int[size];
+	}
+	
+	for(int j = 0; j <= array_size; j++)
+	{
+		for(int k = 0; k <= array_size; k++)
+		{
+			 B[j][k] = 0;
+			 cout << B[j][k] << " ";
+		}
+
+		cout << endl;
+	}
+	 
+	//cout << "Variable assignment works!" <<endl;
+
+
+	cout << "\nA " << size << "x" << size << " board has been created.\n";
+	cout << "\nHow many ships? ";
+	cin >> num_ships;
+
+	set_ships(B,size,num_ships); //function call to set_ships
+
+
+	/*DETERMINE IF IT’S A HIT. IF SO, UPDATE INFORMATION & TELL USER.*/
+	while(num_hits!=num_ships)
+	{
+		cout << "What row: ";
+		cin >> row;
+
+		while(row > size)
+		{
+		cout << "\nThat row does not exist on this board. Please re-enter: " << endl;
+		cin >> row;
+		}
+
+		cout << "What col: ";
+		cin >> col;
+
+		while(col > size)
+		{
+		cout << "\nThat column does not exist on this board. Please re-enter: " << endl;
+		cin >> col;
+		}
+
+		if(B[row-1][col-1] == 1){	//must include -1 to account for array indexing
+			B[row-1][col-1] = 2;
+			num_hits += 1;
+			cout << "\nHit! You got one! \n" << num_ships - num_hits << "left!\n" << endl;
+		}
+		else
+		{
+			cout << "\nMiss!\n" << endl;
+		}
+
+	}
+
+	cout << "You sunk my battleships!" << endl;
+
+
+for(int g=0; g < size; g++)
+{
+   delete [] B[g];
+}
+delete B;
+}
